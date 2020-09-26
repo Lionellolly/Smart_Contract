@@ -1,21 +1,49 @@
-pragma solidity ^0.5.0;
+pragma solidity ^0.5.9;
 
-contract Hospital{
-	struct Room{
-    	//complete the struct
-    	bytes32 room_name;
-    	string occ_name;
-    	bool isFree;
+contract KYC {
+	struct Customer{
+    	bytes32 user_name;
+    	bytes32 data_hash;
+    	address bank_addr;
 	}
-	Room[] public rooms;
-    
-	constructor (bytes32[] memory names) public{
-    	//complete the constructor       	 
-    	}
+	struct Bank{
+	    bytes32 bank_name;
+	    address eth_address;
+	    bytes32 reg_number;
 	}
-	function assignRoom(bytes32 roomName, string memory patientName) public returns(string memory){
-    	//complete the function
-           	 	
+	
+	Customer[] allCustomers;
+	
+	Bank[] allBanks;
+	
+	constructor () public{
     	}
+	function checkIfCustomerIsPresent(bytes32 user_name) public view returns (bool){
+	    for (uint i=0; i<allCustomers.length;i++){
+	        if (allCustomers[i].user_name == user_name)
+	            return true;
+	    }
+	    return false;
+	}
+	
+    function addCustomer(bytes32 user_name, bytes32 data_hash) public payable {
+        // if (!checkIfCustomerIsPresent()){
+            
+        // }
+    }
+	function removeCustomer() public {
+        
+    }
+    function modifyCustomer() public {
+        
+    }
+    function viewCustomer() public returns (bytes32){
+        
+    }
     
-}
+    // modifier checkIfCustomerIsPresent(bytes32 user_name){
+    //     require(!allCustomers[user_name].exists,"Customer already exists...");
+    //  _;   
+    // }
+	
+	}
