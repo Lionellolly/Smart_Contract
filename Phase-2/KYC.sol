@@ -4,17 +4,30 @@ contract KYC {
 	struct Customer{
     	bytes32 user_name;
     	bytes32 data_hash;
+    	bool kyc_status;
+    	uint down_votes;
+    	uint up_votes;
     	address bank_addr;
 	}
 	struct Bank{
 	    bytes32 bank_name;
 	    address eth_address;
+	    uint report;
+	    uint kyc_count;
+	    bool kyc_permission;
 	    bytes32 reg_number;
+	}
+	struct KYC_Request{
+        bytes32 user_name;
+        address bank_addr;
+        bytes32 data_hash;
 	}
 	
 	Customer[] allCustomers;
 	
 	Bank[] allBanks;
+	
+	KYC_Request[] allRequests;
 	
 	constructor () public{
     	}
@@ -34,10 +47,25 @@ contract KYC {
 	    return false;
 	}
 	
+	function checkKycPermission() public payable returns (bool){
+	    for(uint i=0; i< allBanks.length;i++){
+	        if(allBanks[i].eth_address == msg.sender)
+	         return true;
+	    }
+	    return false;
+	}
+	
+	function addRequest(bytes32 user_name, bytes32 data_hash)public payable{
+	    if(isPartOfBanks() && checkKycPermission()){
+	        allRequests.length++;
+	        allRequests[allRequests.length-1] = KYC_Request(user_name, msg.sender,data_hash);
+	    }
+	}
+	
     function addCustomer(bytes32 user_name, bytes32 data_hash) public payable {
         if (!checkIfCustomerIsPresent(user_name) && isPartOfBanks()){
             allCustomers.length++;
-            allCustomers[allCustomers.length-1] = Customer(user_name, data_hash, msg.sender);
+            allCustomers[allCustomers.length-1] = Customer(user_name, data_hash, true, 0, 0, msg.sender);
         }
     }
     
