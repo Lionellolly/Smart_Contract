@@ -28,9 +28,14 @@ contract KYC {
 	Bank[] allBanks;
 	
 	KYC_Request[] allRequests;
+	address admin;
 	
-	constructor () public{
+	constructor () public payable {
+	    admin = msg.sender;
     	}
+    	
+    // BANK INTERFACE 
+    	
 	function checkIfCustomerIsPresent(bytes32 user_name) public view returns (bool){
 	    for (uint i=0; i<allCustomers.length;i++){
 	        if (allCustomers[i].user_name == user_name)
@@ -55,10 +60,14 @@ contract KYC {
 	    return false;
 	}
 	
-	function addRequest(bytes32 user_name, bytes32 data_hash)public payable{
+	function addRequest(bytes32 user_name, bytes32 data_hash) public payable{
 	    if(isPartOfBanks() && checkKycPermission()){
 	        allRequests.length++;
-	        allRequests[allRequests.length-1] = KYC_Request(user_name, msg.sender,data_hash);
+	        allRequests[allRequests.length-1] = KYC_Request(user_name, msg.sender, data_hash);
+	        for(uint i=0;i<allBanks.length;i++){
+	            if(allBanks[i].eth_address == msg.sender)
+	                allBanks[i].kyc_count++;
+	        }
 	    }
 	}
 	
@@ -76,6 +85,10 @@ contract KYC {
                         allRequests[j-1]=allRequests[j];
                     }    
                     allRequests.length--;
+                    for(uint k=0;k < allBanks.length;k++){
+	                    if(allBanks[k].eth_address == msg.sender)
+	                        allBanks[k].kyc_count--;
+	                }
                 }
             }
         }
@@ -140,6 +153,10 @@ contract KYC {
                                 allRequests[j-1] = allRequests[j];
                             }
                             allRequests.length--;
+                    	    for(uint k=0;k < allBanks.length;k++){
+        	                if(allBanks[k].eth_address == msg.sender)
+        	                    allBanks[k].kyc_count++;
+	                        }
                         }
                     }
                 }
@@ -165,6 +182,38 @@ contract KYC {
         for(uint i=0; i< allBanks.length;i){
             if(allBanks[i].eth_address == bank_addr)
                 return allBanks[i].bank_name;
+        }
+    }
+    
+    // ADMIN INTERFACE
+    
+    function addBank(bytes32 bank_name, address eth_address, bytes32 reg_number) public payable {
+        if(admin == msg.sender){
+            allBanks.length++;
+            allBanks[allBanks.length - 1] = Bank(bank_name, eth_address, 0, 0, true, reg_number); 
+        }
+    }
+    
+    function modifyBankKycPermission(address bank_addr) public payable{
+        if(admin == msg.sender){
+            for(uint i=0;i<allBanks.length;i++){
+                if(allBanks[i].eth_address == bank_addr){
+                    allBanks[i].kyc_permission = !allBanks[i].kyc_permission;
+                }
+            }
+        }
+    }
+    
+    function removeBank(address bank_addr) public payable {
+        if(admin == msg.sender){
+            for(uint i=0;i < allBanks.length;i++){
+                if(allBanks[i].eth_address == bank_addr){
+                    for(uint j= i+1; j<allBanks.length;j++){
+                        allBanks[j-1] = allBanks[j];
+                    }
+                    allBanks.length--;
+                }
+            }
         }
     }
     
