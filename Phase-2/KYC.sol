@@ -68,14 +68,27 @@ contract KYC {
             allCustomers[allCustomers.length-1] = Customer(user_name, data_hash, true, 0, 0, msg.sender);
         }
     }
+    function removeRequest(bytes32 user_name, bytes32 data_hash) public payable {
+        if(isPartOfBanks() && checkKycPermission() && allRequests.length != 0){
+            for(uint i=0; i<allRequests.length; i++){
+                if(allRequests[i].user_name == user_name){
+                    for(uint j=i+1;j< allRequests.length;j++){
+                        allRequests[j-1]=allRequests[j];
+                    }    
+                    allRequests.length--;
+                }
+            }
+        }
+    }
     
 	function removeCustomer(bytes32 user_name) public payable {
         if(isPartOfBanks()){
-            address temp;
+            // uint idx;
             for(uint i=0;i<allCustomers.length;i++){
-                if (allCustomers[i].user_name== user_name){
-                    temp = allCustomers[i].bank_addr;
-                    for(uint j=i+1;j<allCustomers.length;j++){
+                if (allCustomers[i].user_name == user_name && allCustomers[i].bank_addr == msg.sender){
+                    // idx = i;
+                    removeRequest(allCustomers[i].user_name, allCustomers[i].data_hash);
+                    for(uint j=i+1; j < allCustomers.length; j++){
                         allCustomers[j-1]=allCustomers[j];
                     }
                     allCustomers.length--;
@@ -85,24 +98,74 @@ contract KYC {
         }
     }
     
+    function viewCustomer(bytes32 user_name) public payable returns (bytes32, bytes32){
+        if(isPartOfBanks() && checkIfCustomerIsPresent(user_name)){
+            for(uint i=0;i< allCustomers.length; i++){
+                if(allCustomers[i].user_name == user_name)
+                    return (allCustomers[i].user_name,allCustomers[i].data_hash);
+            }
+        }    
+    }
+    
+    function upvoteCustomer(bytes32 user_name) public payable {
+        if(isPartOfBanks() && checkIfCustomerIsPresent(user_name)){
+            for(uint i=0; i<allCustomers.length; i++){
+                if(allCustomers[i].user_name == user_name)
+                    allCustomers[i].up_votes++;
+            }
+        }
+    }
+    
+    function downvoteCustomer(bytes32 user_name) public payable {
+        if(isPartOfBanks() && checkIfCustomerIsPresent(user_name)){
+            for(uint i=0; i< allCustomers.length;i++){
+                if(allCustomers[i].user_name == user_name)
+                    allCustomers[i].down_votes--;
+            }
+        }
+    }
+    
+    // have to complete this function
     function modifyCustomer(bytes32 user_name, bytes32 data_hash) public payable {
         if(isPartOfBanks()){
             for(uint i=0;i< allCustomers.length; i++){
                 if (allCustomers[i].user_name == user_name){
                     allCustomers[i].data_hash = data_hash;
                     allCustomers[i].bank_addr = msg.sender;
+                    allCustomers[i].up_votes = 0;
+                    allCustomers[i].down_votes = 0;
+                    for(uint j=0;j < allRequests.length; j++ ){
+                        if(allRequests[i].user_name == allCustomers[i].user_name){
+                            for(uint k =j+1;k< allRequests.length;k++){
+                                allRequests[j-1] = allRequests[j];
+                            }
+                            allRequests.length--;
+                        }
+                    }
                 }
             }
         }
     }
     
-    function viewCustomer(bytes32 user_name) public returns (bytes32){
-        if(isPartOfBanks() && checkIfCustomerIsPresent(user_name)){
-            for(uint i=0;i< allCustomers.length; i++){
-                if(allCustomers[i].user_name == user_name)
-                    return allCustomers[i].data_hash;
-            }
-        }    
+    function getBankReports(address bank_addr) public view returns (uint){
+        for(uint i=0;i< allBanks.length;i++){
+            if(allBanks[i].eth_address == bank_addr)
+                return allBanks[i].report;
+        }
+    }
+    
+    function getCustomerStatus(bytes32 user_name) public view returns (bool){
+        for(uint i=0;i< allCustomers.length; i++){
+            if(allCustomers[i].user_name == user_name)
+                return allCustomers[i].kyc_status;
+        }   
+    }
+    
+    function viewBankDetails(address bank_addr) public view returns (bytes32){
+        for(uint i=0; i< allBanks.length;i){
+            if(allBanks[i].eth_address == bank_addr)
+                return allBanks[i].bank_name;
+        }
     }
     
 }
