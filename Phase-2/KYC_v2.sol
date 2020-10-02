@@ -28,12 +28,13 @@ contract KYC {
 	mapping(address => Bank) public banksMap;
 	mapping(bytes32 => KYC_Request) public requestsMap;
 	
-	mapping(bytes32 => Bank) public banksKycMap;
+	uint bankCounts;
 	
 	address admin;
 	
 	constructor () public payable {
 	    admin = msg.sender;
+	    bankCounts = 0;
     	}
     	
     // BANK INTERFACE 
@@ -51,11 +52,16 @@ contract KYC {
 	        return false;
 	}
 	
-	function checkKycPermission(address bank_addr) public view returns (bool){
-	    if(banksMap[bank_addr].kyc_permission == true)
-	         return true;
-	    else
-	        return false;
+// 	function isBankValidForKyc(address bank_addr) public view returns (bool){
+	   // if (banksMap[bank_addr].report < uint(bankCounts / 3))
+	       // banksMapp[bank_addr].kyc_permission = false;
+	   // return banksMap[bank_addr].kyc_permission;
+// 	}
+	
+	function checkKycPermission(address bank_addr) public returns (bool){
+	    if(banksMap[bank_addr].report < uint(bankCounts /3))
+	        banksMap[bank_addr].kyc_permission = false;    
+	    return banksMap[bank_addr].kyc_permission;
 	}
 	
 	function addRequest(bytes32 customer, bytes32 data_hash) public payable{
@@ -137,6 +143,7 @@ contract KYC {
     // ADMIN INTERFACE
     function addBank(bytes32 bank_name, address bank_addr, bytes32 reg_number) onlyAdmin public payable {
         banksMap[bank_addr] = Bank(bank_name, bank_addr, 0, 0, true, reg_number); 
+        bankCounts;
     }
     
     function modifyBankKycPermission(address bank_addr) onlyAdmin public payable {
