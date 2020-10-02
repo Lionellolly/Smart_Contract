@@ -83,15 +83,17 @@ contract KYC {
             delete customersMap[customer];
             
             // removing the single or mulitple requests raised by the customer from requestsMap
-            while (requestsMap[customer].user_name == customer)
+            while (requestsMap[customer].user_name == customer){
+                address temp = requestsMap[customer].bank_addr;
+                banksMap[temp].kyc_count--;
                 delete requestsMap[customer];
+            }
         }
-    }
+	}
     
     function viewCustomer(bytes32 customer) public payable returns (bytes32, bytes32){
-        if(isPartOfBanks(msg.sender) && checkIfCustomerIsPresent(customer)){
+        if(isPartOfBanks(msg.sender) && checkIfCustomerIsPresent(customer))
             return (customersMap[customer].user_name, customersMap[customer].data_hash);
-        }    
     }
     
     function upvoteCustomer(bytes32 customer) public payable {
@@ -112,9 +114,12 @@ contract KYC {
             customersMap[customer].up_votes = 0;
             customersMap[customer].down_votes = 0;
             
-            while (requestsMap[customer].user_name == customer)
+            while (requestsMap[customer].user_name == customer){
+                address temp = requestsMap[customer].bank_addr;
+                banksMap[temp].kyc_count--;
                 delete requestsMap[customer];
         }
+    }
     }
     
     function getBankReports(address bank_addr) public view returns (uint){
@@ -130,19 +135,21 @@ contract KYC {
     }
     
     // ADMIN INTERFACE
-    function addBank(bytes32 bank_name, address bank_addr, bytes32 reg_number) public payable {
-        if(admin == msg.sender)
-            banksMap[bank_addr] = Bank(bank_name, bank_addr, 0, 0, true, reg_number); 
+    function addBank(bytes32 bank_name, address bank_addr, bytes32 reg_number) onlyAdmin public payable {
+        banksMap[bank_addr] = Bank(bank_name, bank_addr, 0, 0, true, reg_number); 
     }
     
-    function modifyBankKycPermission(address bank_addr) public payable {
-        if(admin == msg.sender){
-            banksMap[bank_addr].kyc_permission = !banksMap[bank_addr].kyc_permission;
-        }
+    function modifyBankKycPermission(address bank_addr) onlyAdmin public payable {
+        banksMap[bank_addr].kyc_permission = !banksMap[bank_addr].kyc_permission;
     }
     
-    function removeBank(address bank_addr) public payable {
-        if(admin == msg.sender)
-            delete banksMap[bank_addr];
+    function removeBank(address bank_addr) onlyAdmin public payable {
+        delete banksMap[bank_addr];
     }
+    
+    modifier onlyAdmin(){
+        require(msg.sender == admin, "You are not an Administrator. Only admins can perform this function...");
+        _;
+    }
+    
 }
