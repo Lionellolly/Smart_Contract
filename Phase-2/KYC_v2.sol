@@ -23,7 +23,6 @@ contract KYC {
         bytes32 data_hash;
 	}
 	
-
 	mapping(bytes32 => Customer) public customersMap;
 	mapping(address => Bank) public banksMap;
 	mapping(bytes32 => KYC_Request) public requestsMap;
