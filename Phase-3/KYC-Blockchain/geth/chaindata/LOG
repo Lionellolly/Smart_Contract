@@ -39,3 +39,78 @@
 16:00:23.233754 db@open done T·36.387645ms
 16:04:02.350383 db@close closing
 16:04:02.352423 db@close done T·2.039476ms
+=============== Oct 3, 2020 (IST) ===============
+17:23:37.922181 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+17:23:37.925105 version@stat F·[2] S·785B[785B] Sc·[0.50]
+17:23:37.925202 db@open opening
+17:23:37.925440 journal@recovery F·1
+17:23:37.934828 journal@recovery recovering @8
+17:23:37.947655 version@stat F·[2] S·785B[785B] Sc·[0.50]
+17:23:37.966350 db@janitor F·4 G·0
+17:23:37.966405 db@open done T·41.183462ms
+17:23:40.183096 db@close closing
+17:23:40.183300 db@close done T·201.028µs
+=============== Oct 3, 2020 (IST) ===============
+17:24:00.838688 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+17:24:00.839011 version@stat F·[2] S·785B[785B] Sc·[0.50]
+17:24:00.839034 db@open opening
+17:24:00.839121 journal@recovery F·1
+17:24:00.841322 journal@recovery recovering @10
+17:24:00.858972 version@stat F·[2] S·785B[785B] Sc·[0.50]
+17:24:00.878288 db@janitor F·4 G·0
+17:24:00.878353 db@open done T·39.294766ms
+17:28:09.263066 db@close closing
+17:28:09.263754 db@close done T·687.242µs
+=============== Oct 3, 2020 (IST) ===============
+17:28:14.373535 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+17:28:14.375180 version@stat F·[2] S·785B[785B] Sc·[0.50]
+17:28:14.375222 db@open opening
+17:28:14.382330 journal@recovery F·1
+17:28:14.387134 journal@recovery recovering @12
+17:28:14.397406 version@stat F·[2] S·785B[785B] Sc·[0.50]
+17:28:14.414965 db@janitor F·4 G·0
+17:28:14.415051 db@open done T·39.786735ms
+17:30:18.821517 db@close closing
+17:30:18.821658 db@close done T·140.734µs
+=============== Oct 3, 2020 (IST) ===============
+17:33:30.204961 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+17:33:30.205741 version@stat F·[2] S·785B[785B] Sc·[0.50]
+17:33:30.205774 db@open opening
+17:33:30.205875 journal@recovery F·1
+17:33:30.209306 journal@recovery recovering @14
+17:33:30.227524 version@stat F·[2] S·785B[785B] Sc·[0.50]
+17:33:30.242535 db@janitor F·4 G·0
+17:33:30.242707 db@open done T·36.912227ms
+17:33:32.416157 db@close closing
+17:33:32.416296 db@close done T·136.504µs
+=============== Oct 3, 2020 (IST) ===============
+17:38:35.617087 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+17:38:35.617496 version@stat F·[2] S·785B[785B] Sc·[0.50]
+17:38:35.617520 db@open opening
+17:38:35.617598 journal@recovery F·1
+17:38:35.619735 journal@recovery recovering @16
+17:38:35.631910 version@stat F·[2] S·785B[785B] Sc·[0.50]
+17:38:35.649988 db@janitor F·4 G·0
+17:38:35.650042 db@open done T·32.506032ms
+17:38:41.976049 db@close closing
+17:38:41.976140 db@close done T·92.68µs
+=============== Oct 5, 2020 (IST) ===============
+19:56:38.882214 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+19:56:38.885695 version@stat F·[2] S·785B[785B] Sc·[0.50]
+19:56:38.885759 db@open opening
+19:56:38.885948 journal@recovery F·1
+19:56:38.889787 journal@recovery recovering @18
+19:56:38.910853 version@stat F·[2] S·785B[785B] Sc·[0.50]
+19:56:38.927974 db@janitor F·4 G·0
+19:56:38.928026 db@open done T·42.24218ms
+19:57:34.931181 db@close closing
+19:57:34.932121 db@close done T·935.2µs
+=============== Oct 5, 2020 (IST) ===============
+19:57:45.066735 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+19:57:45.067726 version@stat F·[2] S·785B[785B] Sc·[0.50]
+19:57:45.067768 db@open opening
+19:57:45.067927 journal@recovery F·1
+19:57:45.096847 journal@recovery recovering @20
+19:57:45.099821 version@stat F·[2] S·785B[785B] Sc·[0.50]
+19:57:45.117513 db@janitor F·4 G·0
+19:57:45.117554 db@open done T·49.770351ms
