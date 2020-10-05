@@ -36,7 +36,9 @@ contract KYC {
 	    bankCounts = 0;
     	}
     	
-    // BANK INTERFACE 
+    // --- BANK INTERFACE --- // 
+    
+    // checks whether customer is already present to add or remove from blockchain
 	function checkIfCustomerIsPresent(bytes32 customer) public view returns (bool){
 	    if(customersMap[customer].user_name == customer)
 	        return true;
@@ -44,6 +46,7 @@ contract KYC {
 	        return false;
 	}
 	
+    // checks if the bank is in the blockchain
 	function isPartOfBanks(address bank_addr) public view returns (bool){
 	    if(banksMap[bank_addr].eth_address == bank_addr)
 	        return true;
@@ -51,29 +54,34 @@ contract KYC {
 	        return false;
 	}
 	
+    // checks the kyc permission of the blockchain by checking the number of reports threshold
 	function checkKycBankPermission(address bank_addr) public returns (bool){
 	    if(banksMap[bank_addr].report < uint(bankCounts /3))
 	        banksMap[bank_addr].kyc_permission = false;    
 	    return banksMap[bank_addr].kyc_permission;
 	}
 	
+    // checks the customer's upvotes and downvotes upon two conditions
 	function checkKycCustomerRating(bytes32 customer) public view returns (bool){
 	    if(customersMap[customer].up_votes > customersMap[customer].down_votes && customersMap[customer].down_votes < uint(bankCounts /3))
 	        return true;
 	    return false;
 	}
-	
+
+	// adds the requests to the requests mapping
+    // checks the bank's credibility and the kyc permissioning
 	function addRequest(bytes32 customer, bytes32 data_hash) public payable{
 	    if(isPartOfBanks(msg.sender) && checkKycBankPermission(msg.sender) && checkKycCustomerRating(customer))
 	        requestsMap[customer] = KYC_Request(customer, msg.sender, data_hash);
 	    }
 	
-	
+	// adds the customer if couple of checks passes
     function addCustomer(bytes32 customer, bytes32 data_hash) public payable {
         if (!checkIfCustomerIsPresent(customer) && isPartOfBanks(msg.sender))
             customersMap[customer] = Customer(customer, data_hash, true, 0, 0, msg.sender);
     }
-    
+
+    // removes the request if couple of checks passes
     function removeRequest(bytes32 customer) public payable {
         if(isPartOfBanks(msg.sender) && checkKycBankPermission(msg.sender) && requestsMap[customer].user_name == customer){
             address addr = requestsMap[customer].bank_addr;
@@ -81,7 +89,8 @@ contract KYC {
             banksMap[addr].kyc_count--;
         }
     }
-    
+
+    // removes the customer along with the kyc requests
 	function removeCustomer(bytes32 customer) public payable {
         if(isPartOfBanks(msg.sender) && checkIfCustomerIsPresent(customer) && customersMap[customer].bank_addr == msg.sender){
             // removing the customer from customersMap
@@ -95,23 +104,26 @@ contract KYC {
             }
         }
 	}
-    
+
+    // view the customer details
     function viewCustomer(bytes32 customer) public payable returns (bytes32, bytes32){
         if(isPartOfBanks(msg.sender) && checkIfCustomerIsPresent(customer))
             return (customersMap[customer].user_name, customersMap[customer].data_hash);
     }
-    
+
+    // upvote the customer rating points
     function upvoteCustomer(bytes32 customer) public payable {
         if(isPartOfBanks(msg.sender) && checkIfCustomerIsPresent(customer))
             customersMap[customer].up_votes++;
     }
-    
+
+    // downvote the customer rating points
     function downvoteCustomer(bytes32 customer) public payable {
         if(isPartOfBanks(msg.sender) && checkIfCustomerIsPresent(customer))
             customersMap[customer].down_votes--;
     }
     
-    // have to complete this function
+    // modify the customer's data hash
     function modifyCustomer(bytes32 customer, bytes32 data_hash) public payable {
         if(isPartOfBanks(msg.sender)){
             customersMap[customer].data_hash = data_hash;
@@ -126,25 +138,29 @@ contract KYC {
         }
     }
     }
-    
+
+    //  get the bank reports count
     function getBankReports(address bank_addr) public view returns (uint){
         return banksMap[bank_addr].report;
     }
-    
+        
+    // get the customer's kyc status
     function getCustomerStatus(bytes32 customer) public view returns (bool){
         return customersMap[customer].kyc_status;   
     }
     
+    // view the bank name
     function viewBankDetails(address bank_addr) public view returns (bytes32){
         return banksMap[bank_addr].bank_name;
     }
     
-    // ADMIN INTERFACE
+    // ---ADMIN INTERFACE--- //
     function addBank(bytes32 bank_name, address bank_addr, bytes32 reg_number) onlyAdmin public payable {
         banksMap[bank_addr] = Bank(bank_name, bank_addr, 0, 0, true, reg_number); 
         bankCounts;
     }
     
+    // modifiers for admin access
     function modifyBankKycPermission(address bank_addr) onlyAdmin public payable {
         banksMap[bank_addr].kyc_permission = !banksMap[bank_addr].kyc_permission;
     }
